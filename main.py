@@ -183,9 +183,9 @@ def on_message(client, userdata, msg):
         # Serialize the message dictionary to a JSON string
         json_message = json.dumps(message_dict, indent=4)
         logging.info(f"JSON message: \n{json_message}")
-
+        
+        # Publish message to the JSON topic
         publish_topic = json_topic + "/" + channel_name + "/" + msg.topic.split('/')[-1]
-        print (publish_topic)
         client.publish(publish_topic, json_message)
 
     except Exception as e:
