@@ -141,13 +141,17 @@ def on_message(client, userdata, msg):
         decoded_data = mp.decoded
     
     mp.decoded.CopyFrom(decoded_data)
-    # Extract portnum name and payload for logging
-    payload = mp.decoded.payload
+
     portNumInt = mp.decoded.portnum
     handler = protocols.get(portNumInt)
-    if handler.protobufFactory is not None:
+    
+    # Check if a valid handler exists
+    if handler is not None and handler.protobufFactory is not None:
         payload = handler.protobufFactory()
         payload.ParseFromString(mp.decoded.payload)
+    else:
+        logging.warning(f"No handler found for portNumInt: {portNumInt}")
+        payload = None  # Set payload to None if no handler exists
 
     if payload:
         payload = str(payload)
