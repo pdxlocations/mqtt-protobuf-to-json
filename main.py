@@ -121,6 +121,20 @@ def get_portnum_name(portnum) -> str:
     except ValueError:
         return f"Unknown ({portnum})"  # Handle unknown port numbers gracefully
 
+
+def format_mac_address(raw_mac):
+    """Format a raw escaped MAC address string into a standard format."""
+    try:
+        # Convert the raw escaped string to bytes
+        mac_bytes = bytes(raw_mac, "utf-8").decode("unicode_escape").encode("latin1")
+        # Format the bytes into a MAC address (e.g., AA:BB:CC:DD:EE:FF)
+        formatted_mac = ":".join(f"{b:02X}" for b in mac_bytes)
+        return formatted_mac
+    except Exception as e:
+        logging.error(f"Failed to format MAC address: {e}")
+        return raw_mac  # Return the original raw string if formatting fails
+    
+
 def on_message(client, userdata, msg):
     se = mqtt_pb2.ServiceEnvelope()  # Main variable for parsing and decoding
     try:
@@ -164,6 +178,9 @@ def on_message(client, userdata, msg):
     try:
         raw_payload = getattr(mp.decoded, "payload", b"").decode('utf-8')
         structured_payload = parse_payload(raw_payload)
+
+        if "macaddr" in structured_payload:
+            structured_payload["macaddr"] = format_mac_address(structured_payload["macaddr"])
 
         message_dict = {
             "channel": mp.channel,
