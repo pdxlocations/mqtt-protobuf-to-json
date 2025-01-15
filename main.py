@@ -188,7 +188,7 @@ def on_message(client, userdata, msg):
             "hop_start": mp.hop_start,
             "hops_away": mp.hop_start - (mp.hop_start - mp.hop_limit),
             "id": mp.id,
-            "payload": structured_payload,
+            "payload": structured_payload or raw_payload,
             "rssi": mp.rx_rssi,
             "sender": msg.topic.split('/')[-1],
             "snr": mp.rx_snr,
