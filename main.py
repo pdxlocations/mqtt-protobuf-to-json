@@ -199,7 +199,7 @@ def on_message(client, userdata, msg):
 
         # Add optional fields if available
         if mp.decoded.HasField("bitfield"):
-            message_dict["decoded"]["bitfield"] = mp.decoded.bitfield
+            message_dict["bitfield"] = mp.decoded.bitfield
 
         # Serialize the message dictionary to a JSON string
         json_message = json.dumps(message_dict, indent=4)
