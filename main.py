@@ -188,7 +188,7 @@ def on_message(client, userdata, msg):
             "hop_start": mp.hop_start,
             "hops_away": mp.hop_start - (mp.hop_start - mp.hop_limit),
             "id": mp.id,
-            "payload": structured_payload,
+            "payload": structured_payload or raw_payload,
             "rssi": mp.rx_rssi,
             "sender": msg.topic.split('/')[-1],
             "snr": mp.rx_snr,
@@ -199,7 +199,7 @@ def on_message(client, userdata, msg):
 
         # Add optional fields if available
         if mp.decoded.HasField("bitfield"):
-            message_dict["decoded"]["bitfield"] = mp.decoded.bitfield
+            message_dict["bitfield"] = mp.decoded.bitfield
 
         # Serialize the message dictionary to a JSON string
         json_message = json.dumps(message_dict, indent=4)
