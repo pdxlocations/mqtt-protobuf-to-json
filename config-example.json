@@ -7,8 +7,12 @@
         "buftopic": "msh/US/2/e",
         "jsontopic": "msh/US/OR/2/json"
     },
-    "channel":{
-        "name": "LongFast",
-        "key": "AQ=="
+    "channels": {
+        "LongFast": {
+            "key": "AQ=="
+        },
+        "ShortSecure": {
+            "key": "BQ=="
+        }
     }
 }
