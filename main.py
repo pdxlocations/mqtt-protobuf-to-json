@@ -191,7 +191,7 @@ def on_message(client, userdata, msg):
             "channel": mp.channel,
             "from": getattr(mp, "from", None),
             "hop_start": mp.hop_start,
-            "hops_away": mp.hop_start - (mp.hop_start - mp.hop_limit),
+            "hops_away": mp.hop_start - mp.hop_limit,
             "id": mp.id,
             "payload": structured_payload or raw_payload,
             "rssi": mp.rx_rssi,
