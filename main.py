@@ -37,9 +37,13 @@ password = config['broker']['password']
 buf_topic = config['broker']['buftopic']
 json_topic = config['broker']['jsontopic']
 channel = config['broker']['buftopic']
-channel_name = config['channel']['name']
-key = config['channel']['key']
-key = "1PG7OiApB1nwvP+rz05pAQ==" if key == "AQ==" else key
+
+def get_channel_key(channel_name):
+    try:
+        return "1PG7OiApB1nwvP+rz05pAQ==" if config['channels'][channel_name]['key'] == "AQ==" else config['channels'][channel_name]['key']
+    except KeyError:
+        logging.error(f"Channel {channel_name} not found in configuration.")
+        return None
 
 def create_mqtt_client():
     client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -147,6 +151,7 @@ def on_message(client, userdata, msg):
     
     # Decrypt the payload if necessary
     if mp.HasField("encrypted") and not mp.HasField("decoded"):
+        key = get_channel_key(mp.channel)
         decoded_data = decrypt_packet(mp, key)
         if decoded_data is None:  # Check if decryption failed
             logging.error("Decryption failed; skipping message")
@@ -186,7 +191,7 @@ def on_message(client, userdata, msg):
             "channel": mp.channel,
             "from": getattr(mp, "from", None),
             "hop_start": mp.hop_start,
-            "hops_away": mp.hop_start - (mp.hop_start - mp.hop_limit),
+            "hops_away": mp.hop_start - mp.hop_limit,
             "id": mp.id,
             "payload": structured_payload or raw_payload,
             "rssi": mp.rx_rssi,
@@ -206,7 +211,7 @@ def on_message(client, userdata, msg):
         logging.info(f"JSON message: \n{json_message}")
         
         # Publish message to the JSON topic
-        publish_topic = json_topic + "/" + channel_name + "/" + msg.topic.split('/')[-1]
+        publish_topic = json_topic + "/" + msg.topic.split('/')[-2] + "/" + msg.topic.split('/')[-1]
         client.publish(publish_topic, json_message)
 
     except Exception as e:

@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  mqtt-protobuf-to-json:
+    image: python:3.11-slim
+    container_name: mqtt-protobuf-to-json
+    working_dir: /app
+    volumes:
+      - ./:/app                # Mount the current directory into the container
+    entrypoint: ["bash", "entrypoint.sh"]  # Use the entrypoint.sh script
+    restart: unless-stopped    # Restart policy for stable operation
+    environment:
+      - PYTHONUNBUFFERED=1     # Ensure Python logs are shown in real-time
