@@ -26,7 +26,7 @@ You can also host this service in your homelab with the steps below.
 
 ```bash
 # Clone Repo
-git clone <link to repo>
+git clone https://github.com/pdxlocations/mqtt-protobuf-to-json.git
 cd mqtt-protobuf-to-json
 
 # Configuration
